@@ -184,13 +184,14 @@ public class StatusService
 
         await _statusCollection.InsertOneAsync(newStatusModel);
     }
-    public async Task AddBatchAsync(string uid, string fid, ProcessStatusModel.Batch batch)
+    public async Task AddBatchAsync(string uid, string fid, int totalBatches, ProcessStatusModel.Batch batch)
     {
         try
         {
             var filter = Builders<ProcessStatusModel>.Filter.Eq(s => s.Uid, uid) &
                          Builders<ProcessStatusModel>.Filter.Eq(s => s.Fid, fid);
             var update = Builders<ProcessStatusModel>.Update.Push(s => s.batches, batch);
+
 
             var result = await _statusCollection.UpdateOneAsync(filter, update);
 
@@ -207,10 +208,10 @@ public class StatusService
         var filter = Builders<ProcessStatusModel>.Filter.Eq(s => s.Uid, Uid) &
                              Builders<ProcessStatusModel>.Filter.Eq(s => s.Fid, Fid);
         var update = Builders<ProcessStatusModel>.Update.Set(s => s.status, updatedStatusModel.status);
-        var update1 = Builders<ProcessStatusModel>.Update.Set(s => s.totalBatches, updatedStatusModel.totalBatches);
+        // var update1 = Builders<ProcessStatusModel>.Update.Set(s => s.totalBatches, updatedStatusModel.totalBatches);
 
         var result = await _statusCollection.UpdateOneAsync(filter, update);
-        var result1 = await _statusCollection.UpdateOneAsync(filter, update1);
+        // var result1 = await _statusCollection.UpdateOneAsync(filter, update1);
 
 
     }
@@ -250,7 +251,7 @@ public class StatusService
             );
 
             var document = await _statusCollection.Find(filter).FirstOrDefaultAsync();
-
+            Console.WriteLine("yep");
             if (document == null)
             {
                 Console.WriteLine($"No document found with UId: {uid} and FId: {fid}");
@@ -259,6 +260,7 @@ public class StatusService
 
             if (document.batches.Count != document.totalBatches)
             {
+                Console.WriteLine("yep2");
                 return;
             }
 
@@ -267,7 +269,7 @@ public class StatusService
 
             foreach (var batch in document.batches)
             {
-                if (batch.batchStatus != "Uploaded")
+                if (batch.batchStatus != "Completed")
                 {
                     allCompleted = false;
                     if (batch.batchStatus == "Error")
@@ -278,11 +280,12 @@ public class StatusService
             }
 
             var updateDefinition = new List<UpdateDefinition<ProcessStatusModel>>();
-
+            Console.WriteLine("yep1" + allCompleted);
             if (allCompleted)
             {
+                Console.WriteLine("yep");
                 updateDefinition.Add(Builders<ProcessStatusModel>.Update.Set(s => s.status, "Completed"));
-                await _statusCollection.UpdateOneAsync(document.status, "Completed");
+                // await _statusCollection.UpdateOneAsync(document.status, "Completed");
             }
             else if (errorBatchIds.Count > 0)
             {

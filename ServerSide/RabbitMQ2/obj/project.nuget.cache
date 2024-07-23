@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VYa8plF2IWk=",
+  "dgSpecHash": "9T05BVKFtIY=",
   "success": true,
-  "projectFilePath": "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ2\\RabbitMQ2.csproj",
+  "projectFilePath": "D:\\Task\\seventhTask\\serverside\\rabbitmq2\\RabbitMQ2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ujjwal.tiwari\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\ujjwal.tiwari\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",

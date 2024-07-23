@@ -16,11 +16,11 @@ namespace RabbitMQ.Models
         public string? Id { get; set; }
 
         [BsonElement("Uid")]
-        public required string Uid { get; set; }
+        public string Uid { get; set; }
         [BsonElement("Fid")]
-        public required string Fid { get; set; }
+        public string Fid { get; set; }
         [BsonElement("status")]
-        public required string status { get; set; }
+        public string status { get; set; }
         [BsonElement("totalBatches")]
         public int totalBatches { get; set; }
         [BsonElement("batches")]

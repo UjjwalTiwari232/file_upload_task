@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ\\RabbitMQ.csproj": {}
+    "D:\\Task\\seventhTask\\serverside\\rabbitmq\\RabbitMQ.csproj": {}
   },
   "projects": {
-    "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ\\RabbitMQ.csproj": {
+    "D:\\Task\\seventhTask\\serverside\\rabbitmq\\RabbitMQ.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ\\RabbitMQ.csproj",
+        "projectUniqueName": "D:\\Task\\seventhTask\\serverside\\rabbitmq\\RabbitMQ.csproj",
         "projectName": "RabbitMQ",
-        "projectPath": "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ\\RabbitMQ.csproj",
+        "projectPath": "D:\\Task\\seventhTask\\serverside\\rabbitmq\\RabbitMQ.csproj",
         "packagesPath": "C:\\Users\\ujjwal.tiwari\\.nuget\\packages\\",
-        "outputPath": "D:\\Task\\seventhTask\\ServerSide\\RabbitMQ\\obj\\",
+        "outputPath": "D:\\Task\\seventhTask\\serverside\\rabbitmq\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ujjwal.tiwari\\AppData\\Roaming\\NuGet\\NuGet.Config"

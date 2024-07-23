@@ -171,6 +171,13 @@ namespace RabbitMQ.RabbitMQ
             var _statusService = new StatusService();
             var batchSize = 10000;
             var totalBatches = (int)Math.Ceiling((double)userToUpload.Count / batchSize);
+            var statusModel = new ProcessStatusModel
+            {
+                status = "Batching",
+                totalBatches = totalBatches
+
+            };
+            await _statusService.UpdateAsync(Uid, Fid, statusModel);
             Console.WriteLine(totalBatches);
             for (int i = 0; i < totalBatches; i++)
             {

@@ -257,3 +257,4 @@ D:\Task\seventhTask\ServerSide\Backend\bin\Debug\net8.0\ZstdSharp.dll
 D:\Task\seventhTask\ServerSide\Backend\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
 D:\Task\seventhTask\ServerSide\Backend\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
 D:\Task\seventhTask\ServerSide\Backend\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll
+D:\Task\seventhTask\ServerSide\Backend\obj\Debug\net8.0\Backend.sourcelink.json

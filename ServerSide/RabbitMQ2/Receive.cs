@@ -13,12 +13,17 @@ using System.Diagnostics;
 using Polly;
 using Polly.Retry;
 using RabbitMQ2.ServiceStatus.StatusService;
+using RabbitMQ2.Models;
 
 namespace RabbitMQ2
 {
     public class Receive
     {
-        private readonly StatusService _statusService;
+        private static readonly StatusService _statusService;
+        static Receive()
+        {
+            _statusService = new StatusService();
+        }
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
@@ -161,6 +166,12 @@ namespace RabbitMQ2
                     }
                     if (userToUpload != null)
                     {
+                        var statusModel = new ProcessStatusModel
+                        {
+                            status = "Processing",
+                        };
+
+                        await _statusService.UpdateAsync(Uid, Fid, statusModel);
                         var cancellationToken = new CancellationTokenSource();
                         // await InsertEmployeeToDatabaseAsync(userToUpload);
                         await pipeline.ExecuteAsync(async token =>
@@ -269,7 +280,7 @@ namespace RabbitMQ2
             var time = new Stopwatch();
             time.Start();
             var _statusService = new StatusService();
-            // Use your MySQL insertion logic here
+
             var conString = "Server=localhost;Database=test1;User=root;Password=root";
             using (MySqlConnection mConnection = new MySqlConnection(conString))
             {
@@ -304,9 +315,7 @@ namespace RabbitMQ2
                         myCmd.CommandType = System.Data.CommandType.Text;
                         try
                         {
-
                             var cancellationToken = new CancellationTokenSource();
-                            // Asynchronous execution is also supported with the same pipeline instance
 
                             await pipeline.ExecuteAsync(async token =>
                             {
@@ -315,9 +324,6 @@ namespace RabbitMQ2
                                 await transaction.CommitAsync();
                                 await _statusService.UpdateBatchAsync(Uid, Fid, Bid, "Completed");
                                 await _statusService.Check(Uid, Fid);
-
-
-                                // Your code goes here
                             }, cancellationToken.Token);
 
 
@@ -329,17 +335,14 @@ namespace RabbitMQ2
                             await transaction.RollbackAsync();
                         }
 
-
+                        await _statusService.Check(Uid, Fid);
                         Console.WriteLine(time.Elapsed);
                     }
 
-                    // Console.WriteLine(time.Elapsed);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error inserting employees: {ex.Message}");
-
-                    // Handle the exception as needed (logging, rethrowing, etc.)
                 }
             }
         }
