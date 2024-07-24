@@ -116,14 +116,14 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpPost("fasterUpload_Rabbit")]
-        public async Task<IActionResult> updateTheRow(int? id = null)
-        {
-            string sqlQuery = "SELECT * FROM employees  WHERE id LIKE CONCAT('%' " + id + "'%')";
-            // try{
-            //     await 
-            // }
-        }
+        // [HttpPost("fasterUpload_Rabbit")]
+        // public async Task<IActionResult> updateTheRow(int? id = null)
+        // {
+        //     string sqlQuery = "SELECT * FROM employees  WHERE id LIKE CONCAT('%' " + id + "'%')";
+        //     // try{
+        //     //     await 
+        //     // }
+        // }
 
         [HttpPost("fasterUpload_Rabbit")]
         public async Task<IActionResult> FasterUploadRabbit(IFormFile file)
