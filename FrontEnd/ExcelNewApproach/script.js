@@ -66,6 +66,7 @@ canvas.addEventListener("mousedown", (event) => {
 canvas.addEventListener("mousemove", (event) => {
     girdObj.resizeColumnWidth(event);
     girdObj.resizeRowHeight(event);
+    girdObj.selectingMultiple(event);
 });
 canvas.addEventListener("mouseup", (event) => {
     girdObj.reDraw(event);

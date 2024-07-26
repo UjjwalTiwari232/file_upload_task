@@ -139,6 +139,8 @@ class Grid {
             for (let i = 0; i < this.numberOfColumns; i++) {
                 if (xpos <= this.columnWidths[i]) {
                     xpos = this.columnWidths[i];
+                    this.temp2 = this.columnWidths[i];
+                    this.temp = selectStartX;
                     break;
                 }
                 xpos -= this.columnWidths[i];
@@ -148,6 +150,8 @@ class Grid {
             for (let j = 0; j < this.numberofRows; j++) {
                 if (ypos <= this.rowHeights[j]) {
                     ypos = this.rowHeights[j];
+                    this.temp3 = this.rowHeights[j];
+                    this.temp1 = selectStartY;
                     break;
                 }
                 ypos -= this.rowHeights[j];
@@ -179,6 +183,22 @@ class Grid {
         }
     }
 
+    selectingMultiple(event) {
+        if (this.isSelectingMultiple) {
+            let deltaX = Math.abs(event.clientX);
+            let deltaY = Math.abs(event.clientY);
+            console.log(deltaX, deltaY);
+            this.drawGrid();
+            this.ctx.strokeStyle = "#0A7214";
+            this.ctx.strokeRect(
+                this.temp + 0.5,
+                this.temp1 + 0.5,
+                this.temp2 + deltaX,
+                this.temp3 + deltaY
+            );
+        }
+    }
+
     resizeColumnWidth(event) {
         if (this.isResizingColumn) {
             this.canvas.style.cursor = "col-resize";
@@ -207,8 +227,6 @@ class Grid {
             this.drawGrid(); // Redraw with updated column widths
         }
     }
-
-    selectingMultiple() {}
 
     resizeRowHeight(event) {
         if (this.isResizingRow) {
