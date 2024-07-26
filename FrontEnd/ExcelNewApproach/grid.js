@@ -127,38 +127,56 @@ class Grid {
         } else {
             this.isResizingColumn = false;
             this.isResizingRow = false;
-        }
+            this.isSelectingMultiple = true;
 
-        if (xpos <= 0 || ypos <= 0) {
-            console.log("Index or Header");
-            return;
-        }
-
-        let selectStartX = this.indexWidth;
-        let selectStartY = this.headerHeight;
-        for (let i = 0; i < this.numberOfColumns; i++) {
-            if (xpos <= this.columnWidths[i]) {
-                xpos = this.columnWidths[i];
-                break;
+            if (xpos <= 0 || ypos <= 0) {
+                console.log("Index or Header");
+                return;
             }
-            xpos -= this.columnWidths[i];
-            selectStartX += this.columnWidths[i];
-        }
 
-        for (let j = 0; j < this.numberofRows; j++) {
-            if (ypos <= this.rowHeights[j]) {
-                ypos = this.rowHeights[j];
-                break;
+            let selectStartX = this.indexWidth;
+            let selectStartY = this.headerHeight;
+            for (let i = 0; i < this.numberOfColumns; i++) {
+                if (xpos <= this.columnWidths[i]) {
+                    xpos = this.columnWidths[i];
+                    break;
+                }
+                xpos -= this.columnWidths[i];
+                selectStartX += this.columnWidths[i];
             }
-            ypos -= this.rowHeights[j];
-            selectStartY += this.rowHeights[j];
+
+            for (let j = 0; j < this.numberofRows; j++) {
+                if (ypos <= this.rowHeights[j]) {
+                    ypos = this.rowHeights[j];
+                    break;
+                }
+                ypos -= this.rowHeights[j];
+                selectStartY += this.rowHeights[j];
+            }
+
+            console.log(xpos, selectStartX, ypos, selectStartY);
+
+            this.ctx.strokeStyle = "#0A7214";
+            this.ctx.strokeRect(
+                selectStartX + 0.5,
+                selectStartY + 0.5,
+                xpos,
+                ypos
+            );
+            this.ctx.strokeRect(
+                selectStartX + 0.5,
+                0 + 0.5,
+                xpos,
+                this.headerHeight
+            );
+            this.ctx.strokeRect(
+                0 + 0.5,
+                selectStartY + 0.5,
+                this.indexWidth,
+                ypos
+            );
+            this.ctx.strokeStyle = "#BBB5B5";
         }
-
-        console.log(xpos, selectStartX, ypos, selectStartY);
-
-        this.ctx.strokeStyle = "#0A7214";
-        this.ctx.strokeRect(selectStartX + 0.5, selectStartY + 0.5, xpos, ypos);
-        this.ctx.strokeStyle = "#BBB5B5";
     }
 
     resizeColumnWidth(event) {
@@ -189,6 +207,8 @@ class Grid {
             this.drawGrid(); // Redraw with updated column widths
         }
     }
+
+    selectingMultiple() {}
 
     resizeRowHeight(event) {
         if (this.isResizingRow) {
