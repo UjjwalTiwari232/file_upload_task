@@ -10,7 +10,7 @@ let numberofRows = 100;
 let widthOfColumn = 130;
 let heightOfRow = 30;
 let headerHeight = 30;
-let indexWidth = 40;
+let indexWidth = 60;
 
 // Arrays for column widths and row heights
 var columnWidths = new Array(numberOfColumns).fill(widthOfColumn);
@@ -27,7 +27,8 @@ const girdObj = new Grid(
     canvas.height,
     ctx,
     columnWidths,
-    rowHeights
+    rowHeights,
+    canvas
 );
 girdObj.drawGrid();
 
@@ -64,6 +65,7 @@ canvas.addEventListener("mousedown", (event) => {
 });
 canvas.addEventListener("mousemove", (event) => {
     girdObj.resizeColumnWidth(event);
+    girdObj.resizeRowHeight(event);
 });
 canvas.addEventListener("mouseup", (event) => {
     girdObj.reDraw(event);

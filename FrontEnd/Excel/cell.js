@@ -44,29 +44,7 @@ class Cell {
                 this.width,
                 this.height
             );
-            // this.context.strokeStyle = "black";
-            this.context.strokeStyle = "#BBB5B5";
-            this.context.strokeRect(
-                this.topX,
-                this.topY,
-                this.width,
-                this.height
-            );
-            // this.context.strokeStyle = "#BBB5B5";
-            this.context.fillStyle = this.context.fillStyle;
-            this.context.fillRect(
-                this.topX,
-                this.topY,
-                this.width,
-                this.height
-            );
-        } else {
-            // this.context.clearRect(
-            //     this.topX - 1,
-            //     this.topY - 1,
-            //     this.width + 2,
-            //     this.height + 2
-            // );
+            // // this.context.strokeStyle = "black";
             // this.context.strokeStyle = "#BBB5B5";
             // this.context.strokeRect(
             //     this.topX,
@@ -74,7 +52,29 @@ class Cell {
             //     this.width,
             //     this.height
             // );
-            // this.context.fillStyle = "black";
+            // // this.context.strokeStyle = "#BBB5B5";
+            // this.context.fillStyle = this.context.fillStyle;
+            // this.context.fillRect(
+            //     this.topX,
+            //     this.topY,
+            //     this.width,
+            //     this.height
+            // );
+        } else {
+            this.context.clearRect(
+                this.topX - 1,
+                this.topY - 1,
+                this.width + 2,
+                this.height + 2
+            );
+            // this.context.strokeStyle = "#BBB5B5";
+            // this.context.strokeRect(
+            //     this.topX,
+            //     this.topY,
+            //     this.width,
+            //     this.height
+            // );
+            this.context.fillStyle = "black";
             //   this.context.fillRect(this.topX, this.topY, this.width, this.height);
         }
         this.DrawText();

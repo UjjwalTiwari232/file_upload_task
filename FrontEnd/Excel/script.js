@@ -39,6 +39,7 @@ fetch(apiUrl)
                 arrayOfObjectValues
             );
             table.draw();
+            
             let columns_width = table.getColumnsWidth();
             let headers = new Headers(
                 context,
