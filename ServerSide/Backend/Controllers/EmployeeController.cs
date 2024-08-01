@@ -16,6 +16,7 @@ using System.Diagnostics;
 using Backend.RabbitMQ;
 using Microsoft.IdentityModel.Tokens;
 using Backend.ServiceStatus.StatusService;
+using System.Data;
 
 namespace Backend.Controllers
 {
@@ -162,7 +163,61 @@ namespace Backend.Controllers
         }
 
 
+        [HttpGet("email/{email}")]
+        public async Task<Employee> GetByEmail([FromRoute] string email)
+        {
+            MySqlConnection connect = new MySqlConnection("Server=localhost;Database=test1;User=root;Password=root");
+            MySqlCommand cmd = new MySqlCommand($"SELECT * FROM employees WHERE email=@email");
+            cmd.Parameters.AddWithValue("@email", email);
 
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = connect;
+            connect.Open();
+            try
+            {
+                MySqlDataReader reader;
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    DateTime dobFromDb = Convert.ToDateTime(reader["dob"]);
+                    Employee u = new Employee
+                    {
+                        id = Convert.ToInt32(reader["id"]),
+                        name = reader["name"].ToString(),
+                        email = reader["email"].ToString(),
+                        country = reader["country"].ToString(),
+                        state = reader["state"].ToString(),
+                        city = reader["city"].ToString(),
+                        phoneNumber = reader["phoneNumber"].ToString(),
+                        addres1 = reader["addres1"].ToString(),
+                        addres2 = reader["addres2"].ToString(),
+                        dob = new DateOnly(dobFromDb.Year, dobFromDb.Month, dobFromDb.Day),
+                        // id = dr.GetInt32("id"),
+                        // Name=dr.GetString("name"),
+                        // Email=dr.GetString("email"),
+                        // Country=dr.GetString("country"),
+                        // State=dr.GetString("state"),
+                        // City=dr.GetString("city"),
+                        // Telephone=dr.GetString("telephone"),
+                        // AddressLine1=dr.GetString("addressline1"),
+                        // AddressLine2=dr.GetString("addressline2"),
+                        // DateOfBirth=dr.GetDateTime("dateofbirth"),
+                        // // Salary = await GetSalary(dr.GetInt32("id"))
+                        // FY_2019_20=dr.GetInt64("fy_2019_20"),
+                        // FY_2020_21=dr.GetInt64("fy_2020_21"),
+                        // FY_2021_22=dr.GetInt64("fy_2021_22")
+                    };
+                    return u;
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return null;
+        }
 
         [HttpPost("fasterUpload2")]
 

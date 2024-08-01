@@ -1,10 +1,11 @@
 import Grid from "./grid.js";
 
 const canvas = document.getElementById("excelCanvas");
+const searchButton = document.getElementById("searchButton");
+const inputBar = document.getElementById("inputBar");
 const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
+canvas.width = window.innerWidth - 6;
+canvas.height = window.innerHeight - 6;
 let numberOfColumns = 100;
 let numberofRows = 100;
 let widthOfColumn = 130;
@@ -17,20 +18,6 @@ var columnWidths = new Array(numberOfColumns).fill(widthOfColumn);
 var rowHeights = new Array(numberofRows).fill(heightOfRow);
 
 let arrayOfObjectValues = [];
-
-const girdObj = new Grid(
-    numberOfColumns,
-    numberofRows,
-    indexWidth,
-    headerHeight,
-    canvas.width,
-    canvas.height,
-    ctx,
-    columnWidths,
-    rowHeights,
-    canvas
-);
-girdObj.drawGrid();
 
 //SQL DATA Fetching
 const apiUrl = `http://localhost:5166/api/GetEmployees?${new URLSearchParams({
@@ -53,25 +40,123 @@ fetch(apiUrl)
             console.log(arrayOfObjectValues);
             // Call the function to draw the grid
             // drawGrid();
+            // start(arrayOfObjectValues);
+            const girdObj = new Grid(
+                numberOfColumns,
+                numberofRows,
+                indexWidth,
+                headerHeight,
+                canvas.width,
+                canvas.height,
+                ctx,
+                columnWidths,
+                rowHeights,
+                canvas,
+                arrayOfObjectValues
+            );
+            girdObj.drawGrid();
+
+            // Mouse Events
+            canvas.addEventListener("mousedown", (event) => {
+                girdObj.checkReizeOrSelect(event);
+            });
+            canvas.addEventListener("mousemove", (event) => {
+                girdObj.resizeColumnWidth(event);
+                girdObj.resizeRowHeight(event);
+                girdObj.selectingMultiple(event);
+            });
+            canvas.addEventListener("mouseup", (event) => {
+                girdObj.reDraw(event);
+            });
+            canvas.addEventListener("wheel", (event) => {
+                girdObj.scrollHandler(event);
+            });
         }
     })
     .catch((error) => {
         console.error("Fetch Error:", error);
     });
 
-//Mouse Events
-canvas.addEventListener("mousedown", (event) => {
-    girdObj.checkReizeOrSelect(event);
+searchButton.addEventListener("click", async () => {
+    console.log(inputBar.value);
+    var userData = await fetchByEmail(inputBar.value);
+    console.log(userData);
+    arrayOfObjectValues = [];
+    arrayOfObjectValues.push(userData);
+    start(arrayOfObjectValues);
+    // numberofRows = arrayOfObjectValues.length;
+    // numberOfColumns = arrayOfObjectValues[0].length;
+    // const girdObj = new Grid(
+    //     numberOfColumns,
+    //     numberofRows,
+    //     indexWidth,
+    //     headerHeight,
+    //     canvas.width,
+    //     canvas.height,
+    //     ctx,
+    //     columnWidths,
+    //     rowHeights,
+    //     canvas,
+    //     arrayOfObjectValues
+    // );
+    // girdObj.drawGrid();
+    // data.push(userData);
+    // gridLines.setData([userData]);
+    // gridLines.drawGrid();
+    // gridLines.drawCanvas();
+    inputBar.value = "";
 });
-canvas.addEventListener("mousemove", (event) => {
-    girdObj.resizeColumnWidth(event);
-    girdObj.resizeRowHeight(event);
-    girdObj.selectingMultiple(event);
-});
-canvas.addEventListener("mouseup", (event) => {
-    girdObj.reDraw(event);
-});
+async function fetchByEmail(email) {
+    var data = undefined;
+    const apiUrl = `http://localhost:5166/api/email/${email}`;
+    try {
+        const response = await fetch(apiUrl);
+        const apiData = await response.json();
+        // let apidata = data;
+        // apidata = data.map(data => Object.values(data));
+        // console.log("data",Object.values(apiData[0]));
 
+        // for(let i=0;i<apiData.length;i++){
+        data = Object.values(apiData);
+        // }
+    } catch (error) {
+        console.log(error);
+    }
+    return data;
+}
+function start(userData) {
+    arrayOfObjectValues = userData;
+    // arrayOfObjectValues.push(userData);
+    const girdObj = new Grid(
+        numberOfColumns,
+        numberofRows,
+        indexWidth,
+        headerHeight,
+        canvas.width,
+        canvas.height,
+        ctx,
+        columnWidths,
+        rowHeights,
+        canvas,
+        arrayOfObjectValues
+    );
+    girdObj.drawGrid();
+
+    canvas.addEventListener("mousedown", (event) => {
+        girdObj.checkReizeOrSelect(event);
+    });
+    canvas.addEventListener("mousemove", (event) => {
+        girdObj.resizeColumnWidth(event);
+        girdObj.resizeRowHeight(event);
+        girdObj.selectingMultiple(event);
+    });
+    canvas.addEventListener("mouseup", (event) => {
+        girdObj.reDraw(event);
+    });
+    canvas.addEventListener("wheel", (event) => {
+        girdObj.scrollHandler(event);
+    });
+}
 // // Function to draw the grid
 // function drawGrid() {
 //     // Clear the canvas

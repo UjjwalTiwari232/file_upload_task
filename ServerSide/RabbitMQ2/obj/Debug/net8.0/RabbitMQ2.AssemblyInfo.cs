@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RabbitMQ2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a29c8cdb06b1255028c095d08f385e8d7fca6c98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f75dbc279fb47363c30c0cbffbf20936a58c5b95")]
 [assembly: System.Reflection.AssemblyProductAttribute("RabbitMQ2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RabbitMQ2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

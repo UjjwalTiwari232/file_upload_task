@@ -9433,11 +9433,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Task\\seventhTask\\serverside\\rabbitmq2\\RabbitMQ2.csproj",
+      "projectUniqueName": "D:\\Task\\seventhTask\\ServerSide\\rabbitMQ2\\RabbitMQ2.csproj",
       "projectName": "RabbitMQ2",
-      "projectPath": "D:\\Task\\seventhTask\\serverside\\rabbitmq2\\RabbitMQ2.csproj",
+      "projectPath": "D:\\Task\\seventhTask\\ServerSide\\rabbitMQ2\\RabbitMQ2.csproj",
       "packagesPath": "C:\\Users\\ujjwal.tiwari\\.nuget\\packages\\",
-      "outputPath": "D:\\Task\\seventhTask\\serverside\\rabbitmq2\\obj\\",
+      "outputPath": "D:\\Task\\seventhTask\\ServerSide\\rabbitMQ2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ujjwal.tiwari\\AppData\\Roaming\\NuGet\\NuGet.Config"
