@@ -69,7 +69,7 @@ class Grid {
             this.ctx.fillRect(0, upper, this.indexWidth, this.rowHeights[i]);
             this.ctx.fillStyle = "black";
             this.ctx.fillText(
-                i,
+                i + 1,
                 this.indexWidth / 2,
                 upper + this.rowHeights[i] / 2
             );
@@ -371,13 +371,6 @@ class Grid {
     }
 
     selectingColumn() {
-        // this.ctx.fillStyle = "rgba(14,101,235,0.1)";
-        // this.ctx.fillRect(this.temp, 0, this.temp3, this.maxHeight);
-        // this.ctx.strokeStyle = "rgb(60, 189, 8)";
-        // this.ctx.strokeRect(this.temp, 0, this.temp3, this.maxHeight);
-
-        // this.ctx.fillStyle = "black";
-        // this.ctx.strokeStyle = "#BBB5B5";
         console.log(this.temp, 0, this.temp3, this.maxHeight);
         this.selectedcell = [];
         for (let i = this.rowStart; i < this.numberofRows; i++) {
@@ -393,21 +386,29 @@ class Grid {
             this.drawGrid();
             this.ctx.fillStyle = "rgba(14,101,235,0.1)";
             this.ctx.strokeStyle = "rgb(14,101,235)";
-            // this.ctx.strokeRect(
-            //     this.selectedcell[0].startX,
-            //     this.selectedcell[0].startY,
-            //     this.selectedcell[0].width,
-            //     this.selectedcell[0].height
-            // );
+
             this.ctx.strokeRect(
-                this.temp + 0.5,
-                this.temp1 + 0.5,
+                this.selectedcell[0].startX,
+                this.selectedcell[0].startY,
+                this.selectedcell[0].width,
+                this.selectedcell[0].height
+            );
+            this.ctx.fillRect(
+                this.selectedcell[0].startX,
+                this.selectedcell[0].startY,
+                this.selectedcell[0].width,
+                this.selectedcell[0].height
+            );
+
+            this.ctx.strokeRect(
+                this.selectedcell[0].startX + 0.5,
+                this.selectedcell[0].startY + 0.5,
                 deltaX,
                 deltaY
             );
             this.ctx.fillRect(
-                this.temp + 0.5,
-                this.temp1 + 0.5,
+                this.selectedcell[0].startX + 0.5,
+                this.selectedcell[0].startY + 0.5,
                 deltaX,
                 deltaY
             );
@@ -545,7 +546,7 @@ class Grid {
         } else if (this.isSelectingMultiple) {
             this.isSelectingCel = false;
             this.isSelectingMultiple = false;
-            this.selectedcell = [];
+            // this.selectedcell = [];
             this.temp2 = 0;
             this.temp3 = 0;
             console.log("hll", this.temp, this.endX, this.temp1, this.endY);
@@ -567,12 +568,13 @@ class Grid {
                                 this.cellData[row][col].width >=
                                 this.endX &&
                             this.cellData[row][col].startY >= this.temp1 &&
-                            this.cellData[row][col].startY <= this.endY)
-                        // ||
-                        // (this.cellData[row][col].startX <= this.temp &&
-                        //     this.cellData[row][col].startX >= this.endX &&
-                        //     this.cellData[row][col].startY <= this.temp1 &&
-                        //     this.cellData[row][col].startY >= this.endY)
+                            this.cellData[row][col].startY <= this.endY) ||
+                        (this.cellData[row][col].startX >= this.temp &&
+                            this.cellData[row][col].startX <= this.endX &&
+                            this.cellData[row][col].startY <= this.temp1 &&
+                            this.cellData[row][col].startY +
+                                this.cellData[row][col].height >=
+                                this.endY)
                     ) {
                         x = Math.min(x, this.cellData[row][col].startX);
                         y = Math.min(y, this.cellData[row][col].startY);
@@ -615,6 +617,19 @@ class Grid {
             this.drawGrid();
             this.ctx.fillStyle = "rgba(14,101,235,0.1)";
             this.ctx.strokeStyle = "rgb(14,101,235";
+
+            this.ctx.strokeRect(
+                this.selectedcell[0].startX,
+                this.selectedcell[0].startY,
+                this.selectedcell[0].width,
+                this.selectedcell[0].height
+            );
+            this.ctx.fillRect(
+                this.selectedcell[0].startX,
+                this.selectedcell[0].startY,
+                this.selectedcell[0].width,
+                this.selectedcell[0].height
+            );
 
             this.ctx.strokeRect(
                 x,
