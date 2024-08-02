@@ -25,6 +25,8 @@ class Grid {
         this.isSelectingMultiple = false;
         this.isResizingColumn = false;
         this.isResizingRow = false;
+        this.isSelectingColumn = false;
+        this.isSelectingRow = false;
         this.temp = 0;
         this.temp1 = 0;
         this.temp2 = 0;
@@ -195,7 +197,10 @@ class Grid {
                 xpos -= this.columnWidths[i];
             }
             return;
-        } else if (ypos <= 0) {
+        }
+        //For Selecting a Column
+        else if (ypos <= 0) {
+            this.isSelectingColumn = true;
             this.temp = this.indexWidth;
             for (let i = 0; i < this.numberOfColumns; i++) {
                 if (xpos < this.columnWidths[i]) {
@@ -227,10 +232,12 @@ class Grid {
                 ypos -= this.rowHeights[i];
             }
             return;
-        } else if (xpos <= 0) {
-            // Storing Initial Y-axis Position
-            this.temp = ypos;
-
+        }
+        //For Selecting a Row
+        else if (xpos <= 0) {
+            this.isSelectingRow = true;
+            this.temp = this.headerHeight;
+            console.log(ypos);
             for (let i = 0; i < this.numberofRows; i++) {
                 if (ypos < this.rowHeights[i]) {
                     this.temp2 = i;
@@ -238,7 +245,9 @@ class Grid {
                     break;
                 }
                 ypos -= this.rowHeights[i];
+                this.temp += this.rowHeights[i];
             }
+            this.selectingRow();
             return;
         } else {
             if (xpos > 0 && ypos > 0) {
@@ -313,29 +322,29 @@ class Grid {
     }
 
     selectingRow() {
-        this.ctx.fillStyle = "rgba(14,101,235,0.1)";
-        this.ctx.fillRect(this.temp, 0, this.temp3, this.maxHeight);
-        this.ctx.strokeStyle = "rgb(60, 189, 8)";
-        this.ctx.strokeRect(this.temp, 0, this.temp3, this.maxHeight);
+        // this.ctx.fillStyle = "rgba(14,101,235,0.1)";
+        // this.ctx.fillRect(this.temp, 0, this.temp3, this.maxHeight);
+        // this.ctx.strokeStyle = "rgb(60, 189, 8)";
+        // this.ctx.strokeRect(this.temp, 0, this.temp3, this.maxHeight);
 
-        this.ctx.fillStyle = "black";
-        this.ctx.strokeStyle = "#BBB5B5";
-        console.log(this.temp, 0, this.temp3, this.maxHeight);
+        // this.ctx.fillStyle = "black";
+        // this.ctx.strokeStyle = "#BBB5B5";
+        console.log(this.temp, 0, this.temp3, this.maxHeight, this.temp2);
         this.selectedcell = [];
-        for (let i = 1; i < this.numberofRows; i++) {
-            this.selectedcell.push(this.cellData[i][this.temp2 + 1]);
+        for (let i = 1; i < this.numberOfColumns; i++) {
+            this.selectedcell.push(this.cellData[this.temp2 + 1][i]);
         }
-        console.log("FROM SELECTING COLUMN", this.selectedcell);
+        console.log("FROM SELECTING ROW", this.selectedcell);
     }
 
     selectingColumn() {
-        this.ctx.fillStyle = "rgba(14,101,235,0.1)";
-        this.ctx.fillRect(this.temp, 0, this.temp3, this.maxHeight);
-        this.ctx.strokeStyle = "rgb(60, 189, 8)";
-        this.ctx.strokeRect(this.temp, 0, this.temp3, this.maxHeight);
+        // this.ctx.fillStyle = "rgba(14,101,235,0.1)";
+        // this.ctx.fillRect(this.temp, 0, this.temp3, this.maxHeight);
+        // this.ctx.strokeStyle = "rgb(60, 189, 8)";
+        // this.ctx.strokeRect(this.temp, 0, this.temp3, this.maxHeight);
 
-        this.ctx.fillStyle = "black";
-        this.ctx.strokeStyle = "#BBB5B5";
+        // this.ctx.fillStyle = "black";
+        // this.ctx.strokeStyle = "#BBB5B5";
         console.log(this.temp, 0, this.temp3, this.maxHeight);
         this.selectedcell = [];
         for (let i = 1; i < this.numberofRows; i++) {
@@ -433,11 +442,18 @@ class Grid {
     }
 
     reDraw(event) {
-        if (this.isResizingColumn) {
+        if (this.isResizingColumn || this.isResizingRow) {
             this.isResizingColumn = false;
-
-            this.isSelectingMultiple = false;
+            this.isResizingRow = false;
             this.canvas.style.cursor = "default";
+            // Clear the entire canvas
+            this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
+
+            // Redraw the grid with updated column widths
+            this.drawGrid();
+        }
+        // Drawing the selected Column
+        else if (this.isSelectingColumn) {
             // Clear the entire canvas
             this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
 
@@ -450,8 +466,22 @@ class Grid {
 
             this.ctx.fillStyle = "black";
             this.ctx.strokeStyle = "#BBB5B5";
-        } else if (this.isResizingRow) {
-            this.isResizingRow = false;
+        }
+        // Drawing the selected Row
+        else if (this.isSelectingRow) {
+            // Clear the entire canvas
+            this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
+
+            // Redraw the grid with updated column widths
+            this.drawGrid();
+            console.log(this.temp, 0, this.temp3, this.maxWidth, this.temp2);
+            this.ctx.fillStyle = "rgba(14,101,235,0.1)";
+            this.ctx.fillRect(0, this.temp, this.maxWidth, this.temp3);
+            this.ctx.strokeStyle = "rgb(60, 189, 8)";
+            this.ctx.strokeRect(0, this.temp, this.maxWidth, this.temp3);
+
+            this.ctx.fillStyle = "black";
+            this.ctx.strokeStyle = "#BBB5B5";
         } else if (this.isSelectingCel && this.isSelectingMultiple == false) {
             this.isSelectingCel = false;
 
