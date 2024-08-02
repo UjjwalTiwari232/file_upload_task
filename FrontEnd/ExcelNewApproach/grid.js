@@ -41,8 +41,10 @@ class Grid {
         // Initialize cellData array
         this.cellData = [];
         this.selectedcell = [];
-        this.scrollRow = 1;
-        this.scrollColumn = 1;
+        this.scrollRow = 0;
+        this.scrollColumn = 0;
+        this.rowStart = 1;
+        this.colStart = 1;
     }
 
     // Call this method whenever grid data is updated or needs redrawing
@@ -62,7 +64,7 @@ class Grid {
 
         let upper = this.headerHeight;
 
-        for (let i = this.scrollRow; i < this.numberofRows; i++) {
+        for (let i = this.rowStart - 1; i < this.numberofRows; i++) {
             this.ctx.fillStyle = "#CECECE";
             this.ctx.fillRect(0, upper, this.indexWidth, this.rowHeights[i]);
             this.ctx.fillStyle = "black";
@@ -75,7 +77,7 @@ class Grid {
         }
         upper = this.indexWidth;
         let column_counter = "A";
-        for (let i = this.scrollColumn; i < this.numberOfColumns; i++) {
+        for (let i = this.colStart - 1; i < this.numberOfColumns; i++) {
             this.ctx.fillStyle = "#CECECE";
             this.ctx.fillRect(
                 upper,
@@ -88,7 +90,6 @@ class Grid {
             column_counter = String.fromCharCode(
                 column_counter.charCodeAt() + 1
             );
-            console.log(text);
             this.ctx.fillStyle = "black";
             this.ctx.fillText(
                 text,
@@ -104,9 +105,9 @@ class Grid {
         let x = this.indexWidth;
         let y = this.headerHeight;
 
-        for (let i = this.scrollRow; i < this.numberofRows; i++) {
+        for (let i = this.rowStart; i < this.numberofRows; i++) {
             this.cellData[i] = [];
-            for (let j = this.scrollColumn; j < this.numberOfColumns; j++) {
+            for (let j = this.colStart; j < this.numberOfColumns; j++) {
                 let text = "";
                 if (this.arrayOfObjectValues[i - 1][j - 1] != undefined) {
                     text = this.arrayOfObjectValues[i - 1][j - 1];
@@ -149,11 +150,17 @@ class Grid {
         this.ctx.lineTo(0, this.maxHeight);
         x = this.indexWidth;
 
-        this.columnWidths.forEach((width, index) => {
+        for (let col = this.colStart - 1; col < this.numberOfColumns; col++) {
             this.ctx.moveTo(x + 0.5, 0);
             this.ctx.lineTo(x + 0.5, this.maxHeight);
-            x += width;
-        });
+            x += this.columnWidths[col];
+        }
+
+        // this.columnWidths.forEach((width, index) => {
+        //     this.ctx.moveTo(x + 0.5, 0);
+        //     this.ctx.lineTo(x + 0.5, this.maxHeight);
+        //     x += width;
+        // });
 
         // Draw the rightmost vertical line
         this.ctx.moveTo(x + 0.5, 0);
@@ -163,11 +170,12 @@ class Grid {
         this.ctx.moveTo(0, 0);
         this.ctx.lineTo(this.maxWidth, 0);
         y = this.headerHeight;
-        this.rowHeights.forEach((height) => {
+
+        for (let row = this.rowStart - 1; row < this.numberofRows; row++) {
             this.ctx.moveTo(0, y + 0.5);
             this.ctx.lineTo(this.maxWidth, y + 0.5);
-            y += height;
-        });
+            y += this.rowHeights[row];
+        }
 
         // Draw the bottommost horizontal line
         this.ctx.moveTo(0, y + 0.5);
@@ -178,30 +186,25 @@ class Grid {
     }
 
     scrollHandler(event) {
-        // if (event.deltaY > 0) {
-        //     if (this.scrollRow < this.numberofRows) {
-        //         this.scrollRow += 2;
-        //     }
-        // } else {
-        //     if (this.scrollRow > 1) {
-        //         this.scrollRow -= 2;
-        //     }
-        // }
         if (this.scrollRow <= 0 && event.deltaY < 0) {
             this.scrollRow = 0;
         } else {
             this.scrollRow += event.deltaY;
         }
-        console.log(event.deltaY, this.scrollRow);
-        let scrollNum = Math.floor(this.scrollRow / event.deltaY);
-        console.log(this.scrollRow, event.deltaY, scrollNum, scrollNum);
-        // if (this.st + 24 >= this.checkPoint) {
-        //     this.checkPoint += 40;
-        //     console.log("fetch called");
-        //     this.fetchData();
-        // }
-        this.scrollRow = 1;
-        this.scrollRow += scrollNum;
+        let scrollCount = 0;
+        let count = 0;
+        // this.rowStart = Math.floor(this.scrollRow / event.deltaY);
+        // let temp = this.headerHeight;
+        for (let x = 0; x < this.numberofRows; x++) {
+            if (scrollCount > this.scrollRow) {
+                this.rowStart = count;
+                console.log(scrollCount, this.scrollRow, count);
+                break;
+            }
+            count++;
+            scrollCount += this.rowHeights[x];
+        }
+
         this.drawGrid();
     }
     checkReizeOrSelect(event) {
@@ -219,11 +222,13 @@ class Grid {
             console.log(" Col Edge");
             this.isResizingColumn = true;
             this.isResizingRow = false;
+            this.isSelectingMultiple = false;
+            this.isSelectingCel = false;
 
             //Storing Initial X-axis Position
             this.temp = xpos;
 
-            for (let i = 0; i < this.numberOfColumns; i++) {
+            for (let i = this.colStart - 1; i < this.numberOfColumns; i++) {
                 if (xpos < this.columnWidths[i]) {
                     this.temp2 = i;
                     this.temp3 = this.columnWidths[i];
@@ -236,6 +241,9 @@ class Grid {
         //For Selecting a Column
         else if (ypos <= 0) {
             this.isSelectingColumn = true;
+            this.isSelectingRow = false;
+            this.isSelectingMultiple = false;
+            this.isSelectingCel = false;
             this.temp = this.indexWidth;
             for (let i = 0; i < this.numberOfColumns; i++) {
                 if (xpos < this.columnWidths[i]) {
@@ -258,7 +266,7 @@ class Grid {
             // Storing Initial Y-axis Position
             this.temp = ypos;
 
-            for (let i = 0; i < this.numberofRows; i++) {
+            for (let i = this.rowStart - 1; i < this.numberofRows; i++) {
                 if (ypos < this.rowHeights[i]) {
                     this.temp2 = i;
                     this.temp3 = this.rowHeights[i];
@@ -271,6 +279,9 @@ class Grid {
         //For Selecting a Row
         else if (xpos <= 0) {
             this.isSelectingRow = true;
+            this.isSelectingColumn = false;
+            this.isSelectingMultiple = false;
+            this.isSelectingCel = false;
             this.temp = this.headerHeight;
             console.log(ypos);
             for (let i = 0; i < this.numberofRows; i++) {
@@ -298,7 +309,7 @@ class Grid {
 
                 let selectStartX = this.indexWidth;
                 let selectStartY = this.headerHeight;
-                for (let i = 0; i < this.numberOfColumns; i++) {
+                for (let i = this.colStart; i < this.numberOfColumns; i++) {
                     if (xpos <= this.columnWidths[i]) {
                         xpos = this.columnWidths[i];
                         this.temp2 = this.columnWidths[i];
@@ -309,7 +320,7 @@ class Grid {
                     selectStartX += this.columnWidths[i];
                 }
 
-                for (let j = 0; j < this.numberofRows; j++) {
+                for (let j = this.rowStart; j < this.numberofRows; j++) {
                     if (ypos <= this.rowHeights[j]) {
                         ypos = this.rowHeights[j];
                         this.temp3 = this.rowHeights[j];
@@ -339,19 +350,6 @@ class Grid {
                     ypos
                 );
                 this.ctx.strokeStyle = "#BBB5B5";
-                // this.ctx.strokeRect(
-                //     selectStartX + 0.5,
-                //     0 + 0.5,
-                //     xpos,
-                //     this.headerHeight
-                // );
-                // this.ctx.strokeRect(
-                //     0 + 0.5,
-                //     selectStartY + 0.5,
-                //     this.indexWidth,
-                //     ypos
-                // );
-                // this.ctx.strokeStyle = "#BBB5B5";
             }
         }
     }
@@ -366,7 +364,7 @@ class Grid {
         // this.ctx.strokeStyle = "#BBB5B5";
         console.log(this.temp, 0, this.temp3, this.maxHeight, this.temp2);
         this.selectedcell = [];
-        for (let i = 1; i < this.numberOfColumns; i++) {
+        for (let i = this.colStart; i < this.numberOfColumns; i++) {
             this.selectedcell.push(this.cellData[this.temp2 + 1][i]);
         }
         console.log("FROM SELECTING ROW", this.selectedcell);
@@ -382,7 +380,7 @@ class Grid {
         // this.ctx.strokeStyle = "#BBB5B5";
         console.log(this.temp, 0, this.temp3, this.maxHeight);
         this.selectedcell = [];
-        for (let i = 1; i < this.numberofRows; i++) {
+        for (let i = this.rowStart; i < this.numberofRows; i++) {
             this.selectedcell.push(this.cellData[i][this.temp2 + 1]);
         }
         console.log("FROM SELECTING COLUMN", this.selectedcell);
@@ -413,6 +411,7 @@ class Grid {
                 deltaX,
                 deltaY
             );
+
             this.ctx.fillStyle = "black";
             this.ctx.strokeStyle = "#BBB5B5";
             this.endX = event.clientX;
@@ -425,7 +424,17 @@ class Grid {
             this.canvas.style.cursor = "col-resize";
             let clickedPos = this.temp;
 
-            let delta = Math.abs(event.clientX - this.temp) + this.temp3;
+            // Log for debugging
+            console.log(
+                "FROM resizeColumnWidth",
+                clickedPos,
+                this.temp,
+                event.clientX,
+                this.temp3,
+                this.temp2 - 1,
+                this.columnWidths[this.temp2 - 1]
+            );
+            let delta = event.clientX - this.temp + this.temp3;
             let updatedCol = 0;
             // Adjust column width
             if (this.temp2 >= 0 && this.temp2 < this.columnWidths.length) {
@@ -438,14 +447,6 @@ class Grid {
                 updatedCol = this.temp2 - 1;
             }
 
-            // Log for debugging
-            console.log(
-                "FROM resizeColumnWidth",
-                clickedPos,
-                this.temp,
-                event.clientX,
-                this.columnWidths[this.temp2 - 1]
-            );
             // Clear the entire canvas
 
             this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
@@ -458,7 +459,7 @@ class Grid {
             this.canvas.style.cursor = "row-resize";
             let clickedPos = this.temp;
 
-            let delta = Math.abs(event.clientY - this.temp) + this.temp3;
+            let delta = event.clientY - this.temp + this.temp3;
 
             // Adjust column width
             if (this.temp2 >= 0 && this.temp2 < this.rowHeights.length) {
@@ -480,6 +481,9 @@ class Grid {
         if (this.isResizingColumn || this.isResizingRow) {
             this.isResizingColumn = false;
             this.isResizingRow = false;
+            this.isSelectingRow = false;
+            this.isSelectingMultiple = false;
+            this.isSelectingCel = false;
             this.canvas.style.cursor = "default";
             // Clear the entire canvas
             this.ctx.clearRect(0, 0, this.maxWidth, this.maxHeight);
@@ -547,9 +551,9 @@ class Grid {
             console.log("hll", this.temp, this.endX, this.temp1, this.endY);
             let x = this.temp,
                 y = this.temp1;
-            for (let row = this.scrollRow; row < this.numberofRows; row++) {
+            for (let row = this.rowStart; row < this.numberofRows; row++) {
                 for (
-                    let col = this.scrollColumn;
+                    let col = this.colStart;
                     col < this.numberOfColumns;
                     col++
                 ) {
@@ -639,7 +643,7 @@ class Grid {
 
     isNearColumnBorder(x, y) {
         const margin = 5;
-        for (let i = 0; i < this.numberOfColumns; i++) {
+        for (let i = this.colStart; i < this.numberOfColumns; i++) {
             if (x < this.columnWidths[i]) {
                 return x < margin;
             }
@@ -649,7 +653,7 @@ class Grid {
     }
     isNearRowBorder(x, y) {
         const margin = 5;
-        for (let i = 0; i < this.numberofRows; i++) {
+        for (let i = this.rowStart; i < this.numberofRows; i++) {
             if (y < this.rowHeights[i]) {
                 return y < margin;
             }
