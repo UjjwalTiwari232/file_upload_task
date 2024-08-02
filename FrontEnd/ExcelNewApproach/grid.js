@@ -61,23 +61,44 @@ class Grid {
         this.ctx.strokeStyle = "#BBB5B5";
 
         let upper = this.headerHeight;
-        this.ctx.fillStyle = "#CECECE";
-        for (let i = 0; i < this.numberofRows; i++) {
+
+        for (let i = this.scrollRow; i < this.numberofRows; i++) {
+            this.ctx.fillStyle = "#CECECE";
             this.ctx.fillRect(0, upper, this.indexWidth, this.rowHeights[i]);
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText(
+                i,
+                this.indexWidth / 2,
+                upper + this.rowHeights[i] / 2
+            );
             upper += this.rowHeights[i];
         }
         upper = this.indexWidth;
-        for (let i = 0; i < this.numberOfColumns; i++) {
+        let column_counter = "A";
+        for (let i = this.scrollColumn; i < this.numberOfColumns; i++) {
+            this.ctx.fillStyle = "#CECECE";
             this.ctx.fillRect(
                 upper,
                 0,
                 this.columnWidths[i],
                 this.headerHeight
             );
+
+            let text = column_counter;
+            column_counter = String.fromCharCode(
+                column_counter.charCodeAt() + 1
+            );
+            console.log(text);
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText(
+                text,
+                upper + this.columnWidths[i] / 2,
+                this.headerHeight / 2
+            );
             upper += this.columnWidths[i];
             // console.log(0, upper, this.indexWidth, this.rowHeights[i]);
         }
-        this.ctx.fillStyle = "black";
+        // this.ctx.fillStyle = "black";
 
         // Set initial positions
         let x = this.indexWidth;
@@ -157,16 +178,30 @@ class Grid {
     }
 
     scrollHandler(event) {
-        console.log(event.deltaY, this.scrollRow);
-        if (event.deltaY > 0) {
-            if (this.scrollRow < this.numberofRows) {
-                this.scrollRow += 2;
-            }
+        // if (event.deltaY > 0) {
+        //     if (this.scrollRow < this.numberofRows) {
+        //         this.scrollRow += 2;
+        //     }
+        // } else {
+        //     if (this.scrollRow > 1) {
+        //         this.scrollRow -= 2;
+        //     }
+        // }
+        if (this.scrollRow <= 0 && event.deltaY < 0) {
+            this.scrollRow = 0;
         } else {
-            if (this.scrollRow > 1) {
-                this.scrollRow -= 2;
-            }
+            this.scrollRow += event.deltaY;
         }
+        console.log(event.deltaY, this.scrollRow);
+        let scrollNum = Math.floor(this.scrollRow / event.deltaY);
+        console.log(this.scrollRow, event.deltaY, scrollNum, scrollNum);
+        // if (this.st + 24 >= this.checkPoint) {
+        //     this.checkPoint += 40;
+        //     console.log("fetch called");
+        //     this.fetchData();
+        // }
+        this.scrollRow = 1;
+        this.scrollRow += scrollNum;
         this.drawGrid();
     }
     checkReizeOrSelect(event) {
