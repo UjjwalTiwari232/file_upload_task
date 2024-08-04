@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel-like Table Application</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/c256e500f7.js"
+      defer
+      crossorigin="anonymous"
+    ></script>
+    
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- Navbar with upload form -->
+      <nav id="navbar">
+        <form id="csvUploadForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="csvFileInput" class="custom-file-upload">
+                Choose File
+            </label>
+            <input type="file" aria-label="Upload CSV file" id="csvFileInput" />
+            <button type="submit">Upload</button>
+          </div>
+        </form>
+      </nav>
+
+      <!-- Progress bar for file upload -->
+      <div id="uploadProgressContainer">
+        <div id="uploadProgressBar"></div>
+      </div>
+
+      <!-- Container for the canvas where the table is rendered -->
+      <div id="canvasContainer">
+        <canvas id="tableCanvas"></canvas>
+      </div>
+      
+      <!-- Footer with a dropdown list -->
+      <footer class="footer">
+        <select id="dropdownMenu"></select>
+      </footer>
+    </div>
+
+    <script type="module" src="script.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+}
+  
+.main-container {
+    width: 100%;
+}
+
+nav {
+    width: 100%;
+    background-color: #217446;
+}
+  
+#csvUploadForm {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+}
+  
+.form-group {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 0 10px;
+}
+
+#csvFileInput {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: white;
+    font-size: 1.6rem;
+    transition: 0.3s;
+    font-weight: bold;
+}
+.custom-file-upload:hover {
+    scale: 1.1;
+}
+  
+.form-group button {
+    margin: 5px;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: transparent;
+    color: #217446;
+    background-color: white;
+    transition: 0.3s;
+}
+.form-group button:hover {
+    background-color: rgb(224, 224, 224);
+}
+
+.delete:hover {
+    color: red;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+    background-color: #F9FBFD;
+    color: black;
+    text-align: center;
+}
+
+.footer #dropdownMenu {
+    background-color: #C4EED0;
+    border: 0px;
+    padding: 10px;
+    border-radius: 3px;
+    margin-right: 15px;
+}
+
+#uploadProgressContainer {
+    width: 50%;
+    background-color: grey;
+}
+
+#uploadProgressBar {
+    display: none;
+    width: 0%;
+    height: 30px;
+    background-color: green;
+}
+  
