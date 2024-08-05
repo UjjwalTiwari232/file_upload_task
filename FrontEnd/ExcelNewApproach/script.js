@@ -19,63 +19,93 @@ var rowHeights = new Array(numberofRows).fill(heightOfRow);
 
 let arrayOfObjectValues = [];
 
-//SQL DATA Fetching
-const apiUrl = `http://localhost:5166/api/GetEmployees?${new URLSearchParams({
-    x: 100,
-}).toString()}`;
+const girdObj = new Grid(
+    numberOfColumns,
+    numberofRows,
+    indexWidth,
+    headerHeight,
+    canvas.width,
+    canvas.height,
+    ctx,
+    columnWidths,
+    rowHeights,
+    canvas,
+    arrayOfObjectValues
+);
+girdObj.drawGrid();
 
-fetch(apiUrl)
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return response.json();
-    })
-    .then((data) => {
-        if (data.msg === false) {
-            alert("please submit the form first");
-        } else {
-            console.log(data);
-            arrayOfObjectValues = data.map((obj) => Object.values(obj));
-            console.log(arrayOfObjectValues);
-            // Call the function to draw the grid
-            // drawGrid();
-            // start(arrayOfObjectValues);
-            const girdObj = new Grid(
-                numberOfColumns,
-                numberofRows,
-                indexWidth,
-                headerHeight,
-                canvas.width,
-                canvas.height,
-                ctx,
-                columnWidths,
-                rowHeights,
-                canvas,
-                arrayOfObjectValues
-            );
-            girdObj.drawGrid();
+// // Mouse Events
+// canvas.addEventListener("mousedown", (event) => {
+//     girdObj.checkReizeOrSelect(event);
+// });
+// canvas.addEventListener("mousemove", (event) => {
+//     girdObj.resizeColumnWidth(event);
+//     girdObj.resizeRowHeight(event);
+//     girdObj.selectingMultiple(event);
+// });
+// canvas.addEventListener("mouseup", (event) => {
+//     girdObj.reDraw(event);
+// });
+// canvas.addEventListener("wheel", (event) => {
+//     girdObj.scrollHandler(event);
+// });
+// //SQL DATA Fetching
+// const apiUrl = `http://localhost:5166/api/GetEmployees?${new URLSearchParams({
+//     x: 100,
+// }).toString()}`;
 
-            // Mouse Events
-            canvas.addEventListener("mousedown", (event) => {
-                girdObj.checkReizeOrSelect(event);
-            });
-            canvas.addEventListener("mousemove", (event) => {
-                girdObj.resizeColumnWidth(event);
-                girdObj.resizeRowHeight(event);
-                girdObj.selectingMultiple(event);
-            });
-            canvas.addEventListener("mouseup", (event) => {
-                girdObj.reDraw(event);
-            });
-            canvas.addEventListener("wheel", (event) => {
-                girdObj.scrollHandler(event);
-            });
-        }
-    })
-    .catch((error) => {
-        console.error("Fetch Error:", error);
-    });
+// fetch(apiUrl)
+//     .then((response) => {
+//         if (!response.ok) {
+//             throw new Error("Network response was not ok");
+//         }
+//         return response.json();
+//     })
+//     .then((data) => {
+//         if (data.msg === false) {
+//             alert("please submit the form first");
+//         } else {
+//             console.log(data);
+//             arrayOfObjectValues = data.map((obj) => Object.values(obj));
+//             console.log(arrayOfObjectValues);
+//             // Call the function to draw the grid
+//             // drawGrid();
+//             // start(arrayOfObjectValues);
+//             const girdObj = new Grid(
+//                 numberOfColumns,
+//                 numberofRows,
+//                 indexWidth,
+//                 headerHeight,
+//                 canvas.width,
+//                 canvas.height,
+//                 ctx,
+//                 columnWidths,
+//                 rowHeights,
+//                 canvas,
+//                 arrayOfObjectValues
+//             );
+//             girdObj.drawGrid();
+
+//             // Mouse Events
+//             canvas.addEventListener("mousedown", (event) => {
+//                 girdObj.checkReizeOrSelect(event);
+//             });
+//             canvas.addEventListener("mousemove", (event) => {
+//                 girdObj.resizeColumnWidth(event);
+//                 girdObj.resizeRowHeight(event);
+//                 girdObj.selectingMultiple(event);
+//             });
+//             canvas.addEventListener("mouseup", (event) => {
+//                 girdObj.reDraw(event);
+//             });
+//             canvas.addEventListener("wheel", (event) => {
+//                 girdObj.scrollHandler(event);
+//             });
+//         }
+//     })
+//     .catch((error) => {
+//         console.error("Fetch Error:", error);
+//     });
 
 searchButton.addEventListener("click", async () => {
     console.log(inputBar.value);
