@@ -17,6 +17,8 @@ using Backend.RabbitMQ;
 using Microsoft.IdentityModel.Tokens;
 using Backend.ServiceStatus.StatusService;
 using System.Data;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace Backend.Controllers
 {
@@ -28,34 +30,87 @@ namespace Backend.Controllers
 
 
         // private StatusService _statusService;
+        private IMongoCollection<ProcessStatusModel> _statusCollection;
         private readonly ApplicationDbContext _context = context;
 
-        [HttpGet]
-        public async Task<IActionResult> AllData()
+        // [HttpGet]
+        // public async Task<IActionResult> AllData()
+        // {
+
+        //     // return Ok();
+        //     var connString = "Server=localhost;Database=test1;User=root;Password=root";
+        //     await using var connection = new MySqlConnection(connString);
+        //     await connection.OpenAsync();
+        //     // var cmd = new MySqlCommand()
+        //     // using (var cmd = new MySqlCommand())
+        //     // {
+        //     //     cmd.Connection = connection;
+        //     //     cmd.CommandText = "INSERT INTO data (some_field) VALUES (@p)";
+        //     //     cmd.Parameters.AddWithValue("p", "Hello world");
+        //     //     await cmd.ExecuteNonQueryAsync();
+        //     // }
+        //     using var command = new MySqlCommand("SELECT * FROM employees", connection);
+        //     using var reader = await command.ExecuteReaderAsync();
+        //     Console.WriteLine("hellow");
+        //     while (await reader.ReadAsync())
+        //     {
+
+        //         var value = reader.GetValue(0);
+        //         Console.WriteLine(value);
+        //     }
+        //     return Ok();
+        // }
+
+        // [HttpGet("GetStatusData")]
+        // public async Task<IActionResult> GetBatchStatus(string Fid = "")
+        // {
+        //     try
+        //     {
+        //         var mongoClient = new MongoClient("mongodb://ujjwal-tiwari:zeus%40123@localhost:27017");
+        //         var mongoDatabase = mongoClient.GetDatabase("testing");
+
+        //         _statusCollection = mongoDatabase.GetCollection<ProcessStatusModel>("Status");
+
+        //         var data = _statusCollection.FindAsync(Builders<ProcessStatusModel>.Filter.Eq("Fid", Fid));
+        //         return Ok(data);
+        //     }
+        //     catch (System.Exception)
+        //     {
+
+        //         throw;
+        //     }
+
+
+        // }
+
+        [HttpGet("GetStatusData")]
+        public async Task<IActionResult> GetBatchStatus(string Fid = "")
         {
-
-            // return Ok();
-            var connString = "Server=localhost;Database=test1;User=root;Password=root";
-            await using var connection = new MySqlConnection(connString);
-            await connection.OpenAsync();
-            // var cmd = new MySqlCommand()
-            // using (var cmd = new MySqlCommand())
-            // {
-            //     cmd.Connection = connection;
-            //     cmd.CommandText = "INSERT INTO data (some_field) VALUES (@p)";
-            //     cmd.Parameters.AddWithValue("p", "Hello world");
-            //     await cmd.ExecuteNonQueryAsync();
-            // }
-            using var command = new MySqlCommand("SELECT * FROM employees", connection);
-            using var reader = await command.ExecuteReaderAsync();
-            Console.WriteLine("hellow");
-            while (await reader.ReadAsync())
+            try
             {
+                // Use configuration for connection string
+                var connectionString = "mongodb://ujjwal-tiwari:zeus%40123@localhost:27017";
+                var mongoClient = new MongoClient(connectionString);
+                var mongoDatabase = mongoClient.GetDatabase("testing");
+                var statusCollection = mongoDatabase.GetCollection<ProcessStatusModel>("Status");
 
-                var value = reader.GetValue(0);
-                Console.WriteLine(value);
+                // Use FindAsync with await and process results
+                var filter = Builders<ProcessStatusModel>.Filter.Eq("Fid", Fid);
+                var result = await statusCollection.Find(filter).ToListAsync();
+
+                if (result == null || result.Count == 0)
+                {
+                    return NotFound("No data found for the provided Fid.");
+                }
+
+                return Ok(result);
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                // Consider logging the exception
+                // _logger.LogError(ex, "An error occurred while fetching status data.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("GetEmployees")]
@@ -154,7 +209,7 @@ namespace Backend.Controllers
                 sender.SendEmployees(file, Uid, Fid);
                 string batchStatus = "WAITING";
                 await _statusService.CreateAsync(Uid, Fid, batchStatus);
-                return Ok("CSV file uploaded and processed successfully.");
+                return Ok(new { Fid = Fid, Uid = Uid });
             }
             catch (Exception ex)
             {
